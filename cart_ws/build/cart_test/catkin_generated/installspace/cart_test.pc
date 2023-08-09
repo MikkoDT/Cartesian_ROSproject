@@ -1,0 +1,8 @@
+prefix=/home/mikko/cart_ws/install
+
+Name: cart_test
+Description: Description of cart_test
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

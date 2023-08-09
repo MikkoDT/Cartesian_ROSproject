@@ -1,0 +1,2 @@
+cart_controller:cart_description:cart_moveit:cart_test
+-DCATKIN_DEVEL_PREFIX=/home/mikko/cart_ws/devel -DCMAKE_INSTALL_PREFIX=/home/mikko/cart_ws/install -G Unix Makefiles

@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="cart">
+
+    <xacro:macro name="default_inertial" params="mass">
+        <inertial>
+            <mass value="${mass}"/>
+            <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="default_transmission" params="number">
+        <transmssion name="transmission_${number}">
+            <type>
+                transmission_interface/SimpleTransmission
+            </type>
+            <joint name="joint_${number}">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="motor_${number}">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+
+        </transmssion>
+
+    </xacro:macro>
+
+    <link name="world"/>
+
+    <link name="x_axis">
+        <xacro:default_inertial mass="1.0"/>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/X-Axis.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="red"> 
+                <color rgba="1 0.2 0.2 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/X-Axis.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="red"> 
+                <color rgba="1 0.2 0.2 1"/>
+            </material>
+        </collision>
+        
+    </link>
+
+    <link name="y_axis">
+        <xacro:default_inertial mass="1"/>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 -0.002 -0.245"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/Joint1_Y.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="green"> 
+                <color rgba="0.2 1 0.2 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 -0.002 -0.245"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/Joint1_Y.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="green"> 
+                <color rgba="0.2 1 0.2 1"/>
+            </material>
+        </collision>
+    </link>
+
+    <link name="z_axis">
+        <xacro:default_inertial mass="1"/>
+        <visual>
+            <origin rpy="0 0 0" xyz="0.021 0.01 -0.018"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/Joint2_Z.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="blue"> 
+                <color rgba="0.2 0.2 1 0.8"/>
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0.021 0.01 -0.018"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/Joint2_Z.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="blue"> 
+                <color rgba="0.2 0.2 1 0.8"/>
+            </material>
+        </collision>
+    </link>
+
+    <link name="pen">
+        <xacro:default_inertial mass="0.05"/>
+        <visual>
+            <origin rpy="0 0 0" xyz="0.0008 0.001 0.011"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/End-Effector.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="white"> 
+                <color rgba="1 1 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0.0008 0.001 0.011"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/End-Effector.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="white"> 
+                <color rgba="1 1 1 1"/>
+            </material>
+        </collision>
+    </link>
+
+    <link name="pen_ring">
+        <xacro:default_inertial mass="0.01"/>
+        <visual>
+            <origin rpy="0 0 0" xyz="0.001 0.001 -0.011"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/Pen_ring.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="violet"> 
+                <color rgba="1 0 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0.001 0.001 -0.011"/>
+            <geometry>
+                <mesh filename="package://cart_description/mesh/Pen_ring.stl" scale="0.006 0.006 0.006"/>
+            </geometry>
+            <material name="violet"> 
+                <color rgba="1 0 1 1"/>
+            </material>
+        </collision>
+    </link>
+
+    <joint name="virtual_joint" type="fixed">
+        <parent link="world"/>
+        <child link="x_axis"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+    </joint>
+
+    <joint name="joint_1" type="prismatic">
+        <parent link="x_axis"/>
+        <child link="y_axis"/>
+        <origin rpy="0 0 0" xyz="0 0 .33"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="0" upper="2" velocity="100" effort="100"/>
+    </joint>
+
+    <joint name="joint_2" type="prismatic">
+        <parent link="y_axis"/>
+        <child link="z_axis"/>
+        <origin rpy="0 0 0" xyz="0 -0.5 .33"/>
+        <axis xyz="0 -1 0"/>
+        <limit lower="0" upper="1.4" velocity="100" effort="100"/>
+    </joint>
+
+    <joint name="joint_3" type="prismatic">
+        <parent link="z_axis"/>
+        <child link="pen"/>
+        <origin rpy="0 0 0" xyz="0.37 0.02 -0.175"/>
+        <axis xyz="0 0 -1"/>
+        <limit lower="0" upper="0.11" velocity="100" effort="100"/>
+    </joint>
+
+    <joint name="end" type="fixed">
+        <parent link="pen"/>
+        <child link="pen_ring"/>
+        <origin rpy="0 0 0" xyz="-0.0002 0.0002 -0.3"/>
+    </joint>
+
+    <xacro:default_transmission number="1"/>
+    <xacro:default_transmission number="2"/>
+    <xacro:default_transmission number="3"/>
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/cartesian</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            <legacyModeNS>true</legacyModeNS>
+
+        </plugin>
+    </gazebo>
+
+</robot>
